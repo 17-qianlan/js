@@ -13,45 +13,76 @@ setTimeout(() => {
 
 
 
-/*function set(key,val) {
+/*function setItem(key,json) {
     let currentTime = new Date().getTime();
-    window.localStorage.setItem(key, JSON.stringify({val,time: currentTime}));
+    window.localStorage.setItem(key, JSON.stringify({
+        username: json.username,
+        token: json.token,
+        time: currentTime
+    }));
 }
 
-function get(key,expire) {
+function getItem(key,expire) {
     let nowTime = new Date().getTime();
     let data = JSON.parse(window.localStorage.getItem(key));
     let val = '';
-    if (nowTime - val.time >= expire) {
+    if (nowTime - data.time >= expire) {
         window.localStorage.removeItem(key);
     } else {
-        val = val.val;
-        window.localStorage.setItem(key,JSON.stringify({val,time: nowTime}))
+        val = data.username;
+        window.localStorage.setItem(key,JSON.stringify({
+            username: data.username,
+            token: data.token,
+            time: nowTime
+        }))
     }
     return val;
-}*/
+}
+
+setItem('user', {
+    username: '1111',
+    token: '66666'
+});
+
+let storage = getItem('user', 10000);
+console.log(storage);
+
+*/
+
 
 export default {
-    get(key, expire) {
-        let nowTime = new Date().getTime(); 
+    getItem(key, expire) {
+        // key   存入浏览器的键名  类型为字符串
+        // expire  单位是小时   类型为数字
         let data = JSON.parse(window.localStorage.getItem(key));
+        if (!data) return false;
+        let nowTime = new Date().getTime();
+        expire = expire * 1e3 * 60 * 60;
         let val = '';
         if (nowTime - data.time >= expire) {
             window.localStorage.removeItem(key);
         } else {
-            val = data.val;
+            val = data.username;
             window.localStorage.setItem(key, JSON.stringify({
-                key: val,
+                token: data.token,
+                username: data.username,
                 time: nowTime
             }));
         }
         return val;
     },
-    set(key, val) {
+    setItem(key, json) {
+        // key  类型为字符串
+        // json 必须是对象{}
         let currentTime = new Date().getTime();
         window.localStorage.setItem(key, JSON.stringify({
-            val,
+            token: json.token,
+            username: json.username,
             time: currentTime
         }));
+    },
+    removerItem(key) {
+        // key  类型为字符串
+        window.localStorage.removeItem(key);
     }
 };
